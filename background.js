@@ -1,5 +1,6 @@
 let allActiveConnectionTabIds = []
 let completedConnection = 0
+let totalButton = 0
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.type === 'sendRequest') {
     chrome.tabs.query({ active: true }, function (tabs) {
@@ -15,10 +16,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     })
   }
   else if (request.type === 'buttonCount') {
-    const totalButton = request.countButton
-    if (request.completedTask) {
-      completedConnection+= 1
-    }
+    totalButton = request.countButton
+    // if (request.completedTask) {
+    //   completedConnection += 1
+    // }
+    // chrome.runtime.sendMessage({ type: "totalCountButton", totalButton: totalButton, completedConnection: completedConnection })
+  }
+  else if (request.type === 'completedButtonTask') {
+    completedConnection += 1
     chrome.runtime.sendMessage({ type: "totalCountButton", totalButton: totalButton, completedConnection: completedConnection })
   }
   else if (request.type == "success") {
@@ -34,7 +39,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     chrome.tabs.query({ active: true }, function (tabs) {
       allActiveConnectionTabIds = allActiveConnectionTabIds.filter((tabId) => tabId !== tabs[0].id)
-      chrome.runtime.sendMessage({ type: "currentTab", currentTabId:  false })
+      chrome.runtime.sendMessage({ type: "currentTab", currentTabId: false })
     })
   }
 })

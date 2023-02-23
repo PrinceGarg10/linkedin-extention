@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     const totalSendRequest = request.completedConnection
     if (totalSendRequest > 0) {
       const percentForCss = Number(totalSendRequest / totalButton) * 100
-      document.querySelector(".wheel").style.background = `radial-gradient(black 55%, transparent 56%), conic-gradient(green 0% ${percentForCss}%)`;
+      document.querySelector(".wheel").style.background = `radial-gradient(black 55%, transparent 56%), conic-gradient(green ${percentForCss}%, white ${percentForCss + 1}%)`;
       document.querySelector(".sentRequestCount").innerHTML = totalSendRequest
     }
     if (totalButton === totalSendRequest) {

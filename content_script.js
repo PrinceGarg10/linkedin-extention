@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }, applyTimeForConnectOpen / 2);
 
             //SENT COMPLETED TASK
-            chrome.runtime.sendMessage({ type: "buttonCount", countButton: getToTalConnectButon(), completedTask: true })
+            chrome.runtime.sendMessage({ type: "completedButtonTask", completedTask: true })
 
           }, (waitTimeForConnectOpen + applyTimeForConnectOpen) * currentApplyCount);
           TimeoutIds.push(currentEventId);
@@ -56,3 +56,11 @@ function getToTalConnectButon() {
   })
   return totalConnectButton
 }
+
+function checkPageOnReload() {
+  if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+    chrome.runtime.sendMessage({ type: "success"})
+  }
+} 
+
+checkPageOnReload()
