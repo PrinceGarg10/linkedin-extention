@@ -1,9 +1,11 @@
 let TimeoutIds = [];
+let textMessage
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'connection') {
     // DEFINE TIMEOUT FOR OPEN MODEL AND CLOSE MODEL
     const waitTimeForConnectOpen = 1000;
-    const applyTimeForConnectOpen = 1000;
+    const applyTimeForConnectOpen = 500;
+    const applyTimeForMessageConnectOpen = 800;
     let currentApplyCount = 1;
 
     // SEND BUTTON COUNT TO BACKGROUND JS 
@@ -17,16 +19,36 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         if (child['innerText'] === 'Connect') {
           let currentEventId = window.setTimeout(() => {
             button.click();
+            //FIND PROFILE NAME
+            const contentDiv = button.closest(".entity-result__item")
+            const profileDiv = contentDiv.querySelector(".entity-result__content.entity-result__divider")
+            const innerTextofco = profileDiv.querySelector(".app-aware-link").innerText
+            const profileName = innerTextofco.split("\n")[0]
 
             window.setTimeout(() => {
               TimeoutIds = TimeoutIds.filter(i => i !== currentEventId)
-              document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1").click()
-            }, applyTimeForConnectOpen / 2);
+              if (textMessage?.length > 1) {
+                const finalMessage = textMessage.replace("$var", profileName)
+                document.querySelector(".artdeco-button.artdeco-button--muted.artdeco-button--2.artdeco-button--secondary.ember-view.mr1").click()
+                window.setTimeout(() => {
+                  document.querySelector(".ember-text-area.ember-view.connect-button-send-invite__custom-message.mb3").value = finalMessage;
+                  document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1").disabled = false
+                  document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1")?.click()
+                }, (applyTimeForMessageConnectOpen / 2))
+              }
+              else {
+                const sendButton = document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1")
+                if (sendButton) {
+                  sendButton.click()
+                }
+              }
+
+            }, ((applyTimeForConnectOpen + applyTimeForMessageConnectOpen) / 2));
 
             //SENT COMPLETED TASK
             chrome.runtime.sendMessage({ type: "completedButtonTask", completedTask: true })
 
-          }, (waitTimeForConnectOpen + applyTimeForConnectOpen) * currentApplyCount);
+          }, (waitTimeForConnectOpen + applyTimeForConnectOpen + applyTimeForMessageConnectOpen + 100) * currentApplyCount);
           TimeoutIds.push(currentEventId);
           currentApplyCount++;
         }
@@ -37,6 +59,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       window.clearTimeout(id);
     })
     TimeoutIds = [];
+  }
+  else if (request.action === 'textMessage') {
+    textMessage = request.message
   }
   else {
     console.log("conncection not found");
@@ -59,8 +84,8 @@ function getToTalConnectButon() {
 
 function checkPageOnReload() {
   if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-    chrome.runtime.sendMessage({ type: "success"})
+    chrome.runtime.sendMessage({ type: "success" })
   }
-} 
+}
 
 checkPageOnReload()

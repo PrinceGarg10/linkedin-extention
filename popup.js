@@ -6,6 +6,10 @@ document.querySelector('#cancel').addEventListener('click', (e) => {
   chrome.runtime.sendMessage({ type: 'cancelRequest' })
 })
 
+document.querySelector('#textMessage').addEventListener('change', (e) => {
+  chrome.runtime.sendMessage({ type: 'textMessage', message: e.target.value})
+})
+
 document.querySelector('#success').addEventListener('click', (e) => {
   document.querySelector(".okBtn").classList.add("show")
   document.querySelector(".okBtn").classList.remove("hide")

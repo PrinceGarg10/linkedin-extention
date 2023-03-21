@@ -7,7 +7,7 @@ display: none;
 body {
   background-color: black;
   height: 270px;
-  width: 250px;
+  min-width: 250px;
   margin: 0
 }
 h3 {

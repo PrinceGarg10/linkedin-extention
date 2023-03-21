@@ -31,6 +31,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     completedConnection = 0
     chrome.runtime.sendMessage({ type: "totalCountButton", totalButton: totalButton, completedConnection: completedConnection })
   }
+  else if (request.type === 'textMessage') {
+    const textMessage = request.message
+    chrome.tabs.query({ active: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "textMessage", message: textMessage }, function (response) {
+      });
+    })
+  }
   else {
     chrome.tabs.query({ active: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { action: "connection-cancel" }, function (response) {
