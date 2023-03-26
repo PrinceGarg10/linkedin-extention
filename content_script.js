@@ -32,6 +32,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 document.querySelector(".artdeco-button.artdeco-button--muted.artdeco-button--2.artdeco-button--secondary.ember-view.mr1").click()
                 window.setTimeout(() => {
                   document.querySelector(".ember-text-area.ember-view.connect-button-send-invite__custom-message.mb3").value = finalMessage;
+                  document.querySelector(".ember-text-area.ember-view.connect-button-send-invite__custom-message.mb3").dispatchEvent(new Event('change'));
                   document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1").disabled = false
                   document.querySelector(".artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1")?.click()
                 }, (applyTimeForMessageConnectOpen / 2))
